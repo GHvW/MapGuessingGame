@@ -1,0 +1,23 @@
+{
+  "name": "mapguessinggame",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GHvW/MapGuessingGame.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GHvW/MapGuessingGame/issues"
+  },
+  "homepage": "https://github.com/GHvW/MapGuessingGame#readme",
+  "dependencies": {
+    "esri-loader": "^2.10.0"
+  }
+}
