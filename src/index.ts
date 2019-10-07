@@ -6,18 +6,28 @@
 
 import { loadModules } from "esri-loader";
 import grayLayer from "../basemaps/layers/gray-base-layer";
+type MapModules = [typeof import("esri/Map"), 
+                   typeof import("esri/views/MapView"), 
+                   typeof import("esri/Basemap"), 
+                //    typeof import("esri/layers/VectorTileLayer"), 
+                   typeof import("esri/Graphic"), 
+                   typeof import("esri/layers/GraphicsLayer"),
+                   typeof import("esri/geometry/Point"),
+                   typeof import("esri/symbols/SimpleMarkerSymbol")];
 
 grayLayer()
     .then((vectorLayer) => {
-        loadModules([
+        (loadModules([
             "esri/Map",
             "esri/views/MapView",
             "esri/Basemap",
-            "esri/layers/VectorTileLayer",
+            // "esri/layers/VectorTileLayer",
             "esri/Graphic",
-            "esri/layers/GraphicsLayer"
-        ])
-        .then(([EsriMap, MapView, Basemap, Graphic, GraphicsLayer]) => {
+            "esri/layers/GraphicsLayer",
+            "esri/geometry/Point",
+            "esri/symbols/SimpleMarkerSymbol"
+        ]) as Promise<MapModules>)
+        .then(([EsriMap, MapView, Basemap, Graphic, GraphicsLayer, Point, SMP]) => {
 
             const customBasemap = new Basemap({
                 baseLayers: [
@@ -28,6 +38,7 @@ grayLayer()
             const map = new EsriMap({
                 basemap: customBasemap
             });
+            console.log("Map", map);
 
             const view = new MapView({
                 container: "container",
@@ -38,7 +49,9 @@ grayLayer()
 
             const graphicsLayer = new GraphicsLayer({
                 graphics: []
-            })
+            });
+
+            console.log("graphics layer", graphicsLayer);
 
             const capitals = new Map([
                  ["Austin, Texas", { longitude: -97.7431, latitude: 30.2672 }],
@@ -51,26 +64,25 @@ grayLayer()
             for (let location of capitals.values()) {
                 console.log(location);
                 const pointGraphic = new Graphic({
-                    geometry: { type: "point", longitude: location.longitude, latitude: location.latitude },
-                    symbol: {
-                        type: "simple-marker",
+                    geometry: new Point({ longitude: location.longitude, latitude: location.latitude }),
+                    symbol: new SMP({ 
                         color: "#00FFFF",
                         outline: {
                             color: "#FFFFFF",
                             width: 1
                         }
-                    },
+                    }),
                     popupTemplate: {
                         title: "city state"
                     }
                 });
 
-                graphicsLayer.add(pointGraphic);
+                graphicsLayer.graphics.push(pointGraphic);
             }
 
-            map.layers.add(graphicsLayer);
+            map.add(graphicsLayer);
         }).then((view) => {
-            
+            return view;
         });
     });
     
