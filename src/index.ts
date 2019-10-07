@@ -61,19 +61,29 @@ grayLayer()
 
             console.log(capitals);
             // #00FFFF = aqua
-            for (let location of capitals.values()) {
-                console.log(location);
+            for (let [name, location] of capitals.entries()) {
+                console.log(name, location);
                 const pointGraphic = new Graphic({
                     geometry: new Point({ longitude: location.longitude, latitude: location.latitude }),
                     symbol: new SMP({ 
                         color: "#00FFFF",
                         outline: {
-                            color: "#FFFFFF",
+                            color: "#C4BEBE",
                             width: 1
                         }
                     }),
-                    popupTemplate: {
-                        title: "city state"
+                    attributes: {
+                        Name: name,
+                        Population: "1,000"
+                    },
+                    popupTemplate: { // autocast to new PopupTemplate ... supposedly
+                        title: "{Name}",
+                        content: [{
+                            type: "fields",
+                            fieldInfos: [
+                                { fieldName: "Population" }
+                            ]
+                        }]
                     }
                 });
 
