@@ -6,6 +6,10 @@
 
 // intro to graphics https://developers.arcgis.com/javascript/latest/sample-code/intro-graphics/index.html
 
+// custom widgets https://developers.arcgis.com/javascript/latest/sample-code/widgets-custom-widget/index.html#3
+// custom widget with vue https://developers.arcgis.com/javascript/latest/sample-code/widgets-frameworks-vue/index.html
+// more with react https://developers.arcgis.com/javascript/latest/sample-code/widgets-frameworks-react/index.html
+
 import { setDefaultOptions, loadModules } from "esri-loader";
 // import grayLayer from "../basemaps/layers/gray-base-layer";
 import layerStyle from "../basemaps/resources/gray-basemap-style";
@@ -73,7 +77,7 @@ type MapModules = [
     */
     const graphicsLayer = new GraphicsLayer({
         graphics: [],
-        
+        visible: false
     });
 
     console.log("graphics layer", graphicsLayer);
