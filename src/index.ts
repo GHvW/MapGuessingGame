@@ -59,7 +59,6 @@ type MapModules = [
     const esriMap = new EsriMap({
         basemap: customBasemap
     });
-    console.log("Map", map);
 
     const view = new MapView({
         container: "container",
@@ -105,11 +104,29 @@ type MapModules = [
     const points = new FeatureLayer({
         source: cities,
         geometryType: "point",
-        objectIdField: "cityName",
+        objectIdField: "ObjectId",
         fields: [{
+            name: "ObjectId",
+            type: "oid"
+        },{
             name: "cityName",
             type: "string"
-        }]
+        }],
+        popupTemplate: {
+            title: "{cityName}"
+        },
+        renderer: {
+            type: "simple",
+            symbol: {
+                type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+                size: 9,
+                color: "#00FFFF",
+                outline: {  // autocasts as new SimpleLineSymbol()
+                    width: 1,
+                    color: "white"
+                }
+            }
+        }
     });
 
     esriMap.add(points);
