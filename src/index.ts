@@ -37,14 +37,14 @@ type MapModules = [
     "esri/Basemap",
     "esri/layers/VectorTileLayer",
     "esri/Graphic",
-    "esri/layers/GraphicsLayer",
+    "esri/layers/FeatureLayer",
     "esri/geometry/Point",
     "esri/symbols/SimpleMarkerSymbol",
     "esri/PopupTemplate",
     "esri/popup/content/FieldsContent",
     "esri/popup/FieldInfo"
 ]) as Promise<MapModules>)
-.then(([EsriMap, MapView, Basemap, VectorTileLayer, Graphic, GraphicsLayer, Point, SMP, PopupTemplate, FieldsContent, FieldInfo]) => {
+.then(([EsriMap, MapView, Basemap, VectorTileLayer, Graphic, FeatureLayer, Point, SMP, PopupTemplate, FieldsContent, FieldInfo]) => {
 
     const customBasemap = new Basemap({
         baseLayers: [
@@ -75,12 +75,6 @@ type MapModules = [
     Each graphic must have its own symbol since the GraphicsLayer cannot have an associated renderer. 
     Graphics may also contain different attribute schema from one another.
     */
-    const graphicsLayer = new GraphicsLayer({
-        graphics: [],
-        visible: false
-    });
-
-    console.log("graphics layer", graphicsLayer);
 
     const capitals = new Map([
             ["Austin, Texas", { longitude: -97.7431, latitude: 30.2672 }],
@@ -88,49 +82,35 @@ type MapModules = [
             ["Olympia, Washington", { longitude: -122.9007, latitude: 47.0379 }]
     ]);
 
-    console.log(capitals);
-    // #00FFFF = aqua
-    for (let [name, location] of capitals.entries()) {
-        console.log(name, location);
-        const pointGraphic = new Graphic({
-            geometry: new Point({ longitude: location.longitude, latitude: location.latitude }),
-            symbol: new SMP({ 
-                color: "#00FFFF",
-                outline: {
-                    // color: "#C4BEBE",
-                    color: "#000000",
-                    width: 1
-                }
+
+    let graphics: __esri.Graphic[] = [];
+    for (let [capital, location] of capitals.entries()) {
+        graphics.push(new Graphic({
+            geometry: new Point({ 
+                longitude: location.longitude,
+                latitude: location.latitude,
             }),
             attributes: {
-                name: name,
-                population: "1,000"
-            },
-            // popupTemplate: { // autocast to new PopupTemplate ... supposedly
-            //     title: "{name}",
-            //     content: [{
-            //         type: "fields", // content autocasts as new FieldsContent()
-            //         fieldInfos: [
-            //             { fieldName: "population" }
-            //         ]
-            //     }]
-            // }
-            popupTemplate: new PopupTemplate({
-                title: "{name}",
-                content: [
-                    new FieldsContent({
-                        fieldInfos: [
-                            new FieldInfo({ fieldName: "population" }),
-                        ]
-                    }),
-                ],
-            }),
-        });
-        console.log(pointGraphic);
-        graphicsLayer.graphics.push(pointGraphic);
+                "cityName": capital
+            }
+        }));
     }
 
-    map.add(graphicsLayer);
+
+    console.log(capitals);
+    // #00FFFF = aqua
+
+    const points = new FeatureLayer({
+        source: graphics,
+        geometryType: "point",
+        objectIdField: "cityName",
+        fields: [{
+            name: "cityName",
+            type: "string"
+        }]
+    });
+
+    map.add(points);
 
     return view;
 }).then((view) => {
