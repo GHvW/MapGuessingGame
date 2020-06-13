@@ -19,7 +19,8 @@
   "homepage": "https://github.com/GHvW/MapGuessingGame#readme",
   "dependencies": {
     "@types/arcgis-js-api": "^4.12.0",
-    "esri-loader": "^2.13.0"
+    "esri-loader": "^2.13.0",
+    "lazer": "git+https://github.com/GHvW/lazer.git"
   },
   "devDependencies": {
     "typescript": "^3.9.5"

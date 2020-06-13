@@ -14,6 +14,7 @@ import { setDefaultOptions, loadModules } from "esri-loader";
 // import grayLayer from "../basemaps/layers/gray-base-layer";
 import layerStyle from "../basemaps/resources/gray-basemap-style";
 // import { FieldsContent } from "esri/popup/content";
+import { Seq, map, filter } from "lazer/src/lazer";
 
 setDefaultOptions({ css: true });
 
@@ -55,14 +56,14 @@ type MapModules = [
         ]
     });
 
-    const map = new EsriMap({
+    const esriMap = new EsriMap({
         basemap: customBasemap
     });
     console.log("Map", map);
 
     const view = new MapView({
         container: "container",
-        map: map,
+        map: esriMap,
         center: [-98.53, 39.50], // center of USA
         zoom: 4
     });
@@ -82,26 +83,27 @@ type MapModules = [
             ["Olympia, Washington", { longitude: -122.9007, latitude: 47.0379 }]
     ]);
 
-
-    let graphics: __esri.Graphic[] = [];
-    for (let [capital, location] of capitals.entries()) {
-        graphics.push(new Graphic({
-            geometry: new Point({ 
-                longitude: location.longitude,
-                latitude: location.latitude,
-            }),
-            attributes: {
-                "cityName": capital
-            }
-        }));
-    }
-
+    const cities: __esri.Graphic[] =
+        Seq.from(capitals.entries())
+            .andThen(map(([capital, location]) => {
+                return new Graphic({
+                    geometry: new Point({ 
+                        longitude: location.longitude,
+                        latitude: location.latitude,
+                    }),
+                    attributes: {
+                        "cityName": capital
+                    }
+                });
+            }))
+            .collect();
 
     console.log(capitals);
+    console.log(cities);
     // #00FFFF = aqua
 
     const points = new FeatureLayer({
-        source: graphics,
+        source: cities,
         geometryType: "point",
         objectIdField: "cityName",
         fields: [{
@@ -110,7 +112,7 @@ type MapModules = [
         }]
     });
 
-    map.add(points);
+    esriMap.add(points);
 
     return view;
 }).then((view) => {
