@@ -24,7 +24,7 @@ type MapModules = [
     typeof import("esri/Basemap"), 
     typeof import("esri/layers/VectorTileLayer"), 
     typeof import("esri/Graphic"), 
-    typeof import("esri/layers/GraphicsLayer"),
+    typeof import("esri/layers/FeatureLayer"),
     typeof import("esri/geometry/Point"),
     typeof import("esri/symbols/SimpleMarkerSymbol"),
     typeof import("esri/PopupTemplate"),
